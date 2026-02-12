@@ -90,11 +90,15 @@ flutter run \
   - `GET /admin/disputes`
   - `POST /admin/disputes/:id/resolve`
   - `POST /premium/subscribe`
+  - `POST /premium/cancel`
   - `GET /premium/me`
   - `POST /corporate/accounts`
+  - `GET /corporate/accounts/:id/members`
+  - `POST /corporate/accounts/:id/members`
   - `POST /corporate/bookings`
   - `GET /corporate/bookings`
   - `POST /ai/estimate`
+  - `POST /admin/payments/:id/escrow` (`hold|release|refund`)
 
 ## 7) Basic QA Checklist
 - Customer can create booking, message, upload media, record payment, and review.

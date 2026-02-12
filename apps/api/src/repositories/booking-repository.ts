@@ -259,3 +259,38 @@ export const updatePaymentStatusByProviderRef = async (
   if (error) throw error;
   return data;
 };
+
+export const getPaymentById = async (paymentId: string) => {
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .select("*")
+    .eq("id", paymentId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+};
+
+export const updatePaymentEscrowById = async (input: {
+  paymentId: string;
+  escrowStatus: "held" | "released" | "refunded";
+  paymentStatus?: "pending" | "paid" | "failed" | "refunded";
+  metadata?: Record<string, unknown>;
+}) => {
+  const now = new Date().toISOString();
+  const payload: Record<string, unknown> = {
+    escrow_status: input.escrowStatus
+  };
+  if (input.escrowStatus === "held") payload.escrow_held_at = now;
+  if (input.escrowStatus === "released") payload.escrow_released_at = now;
+  if (input.paymentStatus) payload.status = input.paymentStatus;
+  if (input.metadata) payload.metadata = input.metadata;
+
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .update(payload)
+    .eq("id", input.paymentId)
+    .select("*")
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+};

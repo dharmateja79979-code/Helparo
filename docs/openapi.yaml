@@ -255,9 +255,23 @@ paths:
       summary: Get my active subscription
       responses:
         "200": { description: Success }
+  /premium/cancel:
+    post:
+      summary: Cancel my active premium subscription
+      responses:
+        "200": { description: Success }
   /corporate/accounts:
     post:
       summary: Create corporate account
+      responses:
+        "201": { description: Created }
+  /corporate/accounts/{id}/members:
+    get:
+      summary: List members for a corporate account
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Add or update corporate member
       responses:
         "201": { description: Created }
   /corporate/bookings:
@@ -274,3 +288,8 @@ paths:
       summary: AI issue estimation (stub)
       responses:
         "201": { description: Created }
+  /admin/payments/{id}/escrow:
+    post:
+      summary: Admin escrow action (hold/release/refund)
+      responses:
+        "200": { description: Success }

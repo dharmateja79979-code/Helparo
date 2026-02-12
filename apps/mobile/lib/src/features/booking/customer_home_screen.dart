@@ -68,6 +68,11 @@ class CustomerHomeScreen extends ConsumerWidget {
             label: "Profile & Addresses",
             onPressed: () => context.go("/customer/profile"),
           ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: "Advanced Features",
+            onPressed: () => context.go("/customer/features"),
+          ),
         ],
       ),
     );

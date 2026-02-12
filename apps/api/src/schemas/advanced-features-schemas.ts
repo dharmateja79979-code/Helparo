@@ -15,6 +15,10 @@ export const subscribePlanSchema = z.object({
   providerRef: z.string().max(120).optional()
 });
 
+export const cancelPremiumSchema = z.object({
+  reason: z.string().max(300).optional()
+});
+
 export const createCorporateAccountSchema = z.object({
   name: z.string().min(2).max(120),
   city: z.string().max(80).optional()
@@ -26,8 +30,18 @@ export const createCorporateBookingSchema = z.object({
   costCenter: z.string().max(80).optional()
 });
 
+export const addCorporateMemberSchema = z.object({
+  userId: z.string().uuid(),
+  role: z.enum(["owner", "manager", "member"]).default("member")
+});
+
 export const createAiEstimateSchema = z.object({
   bookingId: z.string().uuid().optional(),
   inputMedia: z.array(z.string()).min(1),
   prompt: z.string().max(1000).optional()
+});
+
+export const escrowActionSchema = z.object({
+  action: z.enum(["hold", "release", "refund"]),
+  note: z.string().max(500).optional()
 });

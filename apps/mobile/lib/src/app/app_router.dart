@@ -6,7 +6,12 @@ import '../features/customer/presentation/booking_tracking_screen.dart';
 import '../features/customer/presentation/categories_screen.dart';
 import '../features/customer/presentation/helper_list_screen.dart';
 import '../features/customer/presentation/helper_profile_screen.dart';
+import '../features/customer/presentation/advanced_features_screen.dart';
+import '../features/customer/presentation/ai_estimate_screen.dart';
+import '../features/customer/presentation/corporate_screen.dart';
+import '../features/customer/presentation/dispute_screen.dart';
 import '../features/customer/presentation/location_zone_screen.dart';
+import '../features/customer/presentation/premium_screen.dart';
 import '../features/customer/presentation/profile_addresses_screen.dart';
 import '../features/customer/presentation/review_screen.dart';
 import '../features/helper/helper_home_screen.dart';
@@ -66,6 +71,21 @@ final appRouter = GoRouter(
     GoRoute(
         path: "/customer/profile",
         builder: (_, __) => const ProfileAddressesScreen()),
+    GoRoute(
+        path: "/customer/features",
+        builder: (_, __) => const AdvancedFeaturesScreen()),
+    GoRoute(
+        path: "/customer/features/dispute",
+        builder: (_, __) => const DisputeScreen()),
+    GoRoute(
+        path: "/customer/features/premium",
+        builder: (_, __) => const PremiumScreen()),
+    GoRoute(
+        path: "/customer/features/corporate",
+        builder: (_, __) => const CorporateScreen()),
+    GoRoute(
+        path: "/customer/features/ai-estimate",
+        builder: (_, __) => const AiEstimateScreen()),
     GoRoute(path: "/helper", builder: (_, __) => const HelperHomeScreen()),
     GoRoute(
         path: "/helper/onboarding",

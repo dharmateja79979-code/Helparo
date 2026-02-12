@@ -29,6 +29,16 @@ export const listDisputes = async () => {
   return data ?? [];
 };
 
+export const getDisputeById = async (disputeId: string) => {
+  const { data, error } = await supabaseAdmin
+    .from("disputes")
+    .select("*")
+    .eq("id", disputeId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+};
+
 export const resolveDispute = async (input: {
   disputeId: string;
   status: "resolved" | "rejected" | "investigating";
@@ -74,6 +84,32 @@ export const createUserSubscription = async (input: {
       status: "active"
     })
     .select("*")
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const cancelActiveSubscriptions = async (userId: string) => {
+  const { error } = await supabaseAdmin
+    .from("user_subscriptions")
+    .update({
+      status: "cancelled",
+      ends_at: new Date().toISOString()
+    })
+    .eq("user_id", userId)
+    .eq("status", "active");
+  if (error) throw error;
+};
+
+export const setUserPlan = async (input: {
+  userId: string;
+  plan: "free" | "premium";
+}) => {
+  const { data, error } = await supabaseAdmin
+    .from("users")
+    .update({ user_plan: input.plan })
+    .eq("id", input.userId)
+    .select("id, user_plan")
     .single();
   if (error) throw error;
   return data;
@@ -138,13 +174,63 @@ export const createCorporateBooking = async (input: {
 };
 
 export const listCorporateBookingsForUser = async (userId: string) => {
+  const { data: memberships, error: membershipError } = await supabaseAdmin
+    .from("corporate_members")
+    .select("corporate_id")
+    .eq("user_id", userId);
+  if (membershipError) throw membershipError;
+  const corporateIds = (memberships ?? []).map((m) => m.corporate_id as string);
+  if (corporateIds.length === 0) return [];
+
   const { data, error } = await supabaseAdmin
     .from("corporate_bookings")
-    .select("*, corporate_accounts(*)")
-    .eq("requested_by", userId)
+    .select("*, corporate_accounts(*), bookings(*)")
+    .in("corporate_id", corporateIds)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data ?? [];
+};
+
+export const isCorporateMember = async (corporateId: string, userId: string) => {
+  const { data, error } = await supabaseAdmin
+    .from("corporate_members")
+    .select("id, role")
+    .eq("corporate_id", corporateId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+};
+
+export const listCorporateMembers = async (corporateId: string) => {
+  const { data, error } = await supabaseAdmin
+    .from("corporate_members")
+    .select("*, users(id, name, email, phone)")
+    .eq("corporate_id", corporateId)
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+};
+
+export const addCorporateMember = async (input: {
+  corporateId: string;
+  userId: string;
+  role: "owner" | "manager" | "member";
+}) => {
+  const { data, error } = await supabaseAdmin
+    .from("corporate_members")
+    .upsert(
+      {
+        corporate_id: input.corporateId,
+        user_id: input.userId,
+        role: input.role
+      },
+      { onConflict: "corporate_id,user_id" }
+    )
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data;
 };
 
 export const createAiEstimate = async (input: {
