@@ -84,7 +84,7 @@ flutter run \
 - Default commission seed is `15%`.
 - Cashfree:
   - Create order: `POST /bookings/:id/payment/cashfree/order`
-  - Webhook: `POST /payments/cashfree/webhook` (HMAC signature header required)
+  - Webhook: `POST /payments/cashfree/webhook` (`x-webhook-signature` + `x-webhook-timestamp` verified with `CASHFREE_SECRET_KEY`)
 - Advanced feature endpoints:
   - `POST /bookings/:id/dispute`
   - `GET /admin/disputes`

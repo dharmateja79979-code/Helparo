@@ -28,8 +28,9 @@ export const paymentRoutes: FastifyPluginAsync = async (app) => {
 
   app.post("/payments/cashfree/webhook", async (request, reply) => {
     const signature = request.headers["x-webhook-signature"]?.toString();
+    const timestamp = request.headers["x-webhook-timestamp"]?.toString();
     const rawPayload = JSON.stringify(request.body ?? {});
-    if (!verifyCashfreeWebhookSignature(rawPayload, signature)) {
+    if (!verifyCashfreeWebhookSignature({ rawBody: rawPayload, signature, timestamp })) {
       throw new AppError("WEBHOOK_UNAUTHORIZED", "Invalid webhook signature", 401);
     }
     const result = await handleCashfreeWebhook(request.body);

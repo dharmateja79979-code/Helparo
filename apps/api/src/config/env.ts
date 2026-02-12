@@ -16,7 +16,6 @@ const envSchema = z.object({
   CASHFREE_BASE_URL: z.string().url().default("https://sandbox.cashfree.com/pg"),
   CASHFREE_APP_ID: z.string().optional(),
   CASHFREE_SECRET_KEY: z.string().optional(),
-  CASHFREE_WEBHOOK_SECRET: z.string().optional(),
   CASHFREE_RETURN_URL: z.string().url().optional(),
   FCM_ENABLED: z.coerce.boolean().default(false),
   APP_JWT_SECRET: z.string().min(16).default("change-this-app-jwt-secret"),

@@ -1,4 +1,4 @@
-import { createHmac, randomUUID } from "crypto";
+import { createHmac, randomUUID, timingSafeEqual } from "crypto";
 import { env } from "../config/env.js";
 import { AppError } from "../lib/errors.js";
 import {
@@ -80,11 +80,32 @@ export const createCashfreeOrder = async (input: {
   };
 };
 
-export const verifyCashfreeWebhookSignature = (rawBody: string, signatureHeader?: string): boolean => {
-  if (!env.CASHFREE_WEBHOOK_SECRET) return false;
-  if (!signatureHeader) return false;
-  const computed = createHmac("sha256", env.CASHFREE_WEBHOOK_SECRET).update(rawBody).digest("base64");
-  return computed === signatureHeader;
+const normalizeSignature = (signature?: string): string => {
+  if (!signature) return "";
+  const trimmed = signature.trim();
+  if (trimmed.includes("=")) {
+    const parts = trimmed.split("=");
+    return parts[parts.length - 1] ?? "";
+  }
+  return trimmed;
+};
+
+export const verifyCashfreeWebhookSignature = (input: {
+  rawBody: string;
+  signature?: string;
+  timestamp?: string;
+}): boolean => {
+  if (!env.CASHFREE_SECRET_KEY) return false;
+  if (!input.signature || !input.timestamp) return false;
+
+  const signedPayload = `${input.timestamp}${input.rawBody}`;
+  const computed = createHmac("sha256", env.CASHFREE_SECRET_KEY).update(signedPayload).digest("base64");
+  const received = normalizeSignature(input.signature);
+
+  const computedBuffer = Buffer.from(computed);
+  const receivedBuffer = Buffer.from(received);
+  if (computedBuffer.length !== receivedBuffer.length) return false;
+  return timingSafeEqual(computedBuffer, receivedBuffer);
 };
 
 export const handleCashfreeWebhook = async (payload: any) => {
