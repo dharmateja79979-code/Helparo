@@ -15,6 +15,7 @@
     "@fastify/rate-limit": "^10.1.0",
     "@supabase/supabase-js": "^2.49.1",
     "dotenv": "^16.4.7",
+    "fastify-plugin": "^5.0.1",
     "firebase-admin": "^13.2.0",
     "fastify": "^5.2.1",
     "jsonwebtoken": "^9.0.2",

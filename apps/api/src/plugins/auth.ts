@@ -1,4 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
+import fp from "fastify-plugin";
 import { ForbiddenError, UnauthorizedError } from "../lib/errors.js";
 import { supabaseAdmin } from "../lib/supabase.js";
 import { verifyAppToken } from "../services/app-token-service.js";
@@ -14,7 +15,7 @@ declare module "fastify" {
   }
 }
 
-export const authPlugin: FastifyPluginAsync = async (app) => {
+const authPluginImpl: FastifyPluginAsync = async (app) => {
   app.decorate("requireAuth", async (request) => {
     const authHeader = request.headers.authorization;
     if (!authHeader?.startsWith("Bearer ")) {
@@ -71,3 +72,8 @@ export const authPlugin: FastifyPluginAsync = async (app) => {
     }
   });
 };
+
+// Wrap with fastify-plugin so decorators are visible across encapsulation boundaries.
+export const authPlugin = fp(authPluginImpl, {
+  name: "helparo-auth"
+});
