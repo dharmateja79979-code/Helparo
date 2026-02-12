@@ -1,0 +1,276 @@
+openapi: 3.0.3
+info:
+  title: Helparo API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }
+        details: {}
+    ApiEnvelope:
+      type: object
+      properties:
+        success: { type: boolean }
+        data: {}
+        error:
+          $ref: "#/components/schemas/ApiError"
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /auth/me:
+    get:
+      summary: Current authenticated user profile
+      responses:
+        "200": { description: Success }
+  /auth/bootstrap:
+    post:
+      summary: Set role/profile after OTP login
+      responses:
+        "200": { description: Success }
+  /auth/firebase/exchange:
+    post:
+      summary: Exchange Firebase ID token for Helparo app access token
+      security: []
+      responses:
+        "200": { description: Success }
+  /categories:
+    get:
+      summary: List active service categories
+      responses:
+        "200": { description: Success }
+  /zones:
+    get:
+      summary: List active service zones
+      responses:
+        "200": { description: Success }
+  /helpers:
+    get:
+      summary: Search helpers
+      parameters:
+        - in: query
+          name: categoryId
+          required: true
+          schema: { type: string, format: uuid }
+        - in: query
+          name: zoneId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: lat
+          schema: { type: number }
+        - in: query
+          name: lng
+          schema: { type: number }
+      responses:
+        "200": { description: Success }
+  /addresses:
+    get:
+      summary: List my addresses
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Create address
+      responses:
+        "201": { description: Created }
+  /bookings:
+    post:
+      summary: Create booking
+      responses:
+        "201": { description: Created }
+    get:
+      summary: List my bookings
+      responses:
+        "200": { description: Success }
+  /bookings/{id}:
+    get:
+      summary: Booking details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/timeline:
+    get:
+      summary: Booking timeline (events/messages/media/payments)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/cancel:
+    post:
+      summary: Cancel booking
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/review:
+    post:
+      summary: Add review
+      responses:
+        "201": { description: Created }
+  /bookings/{id}/message:
+    post:
+      summary: Send booking message
+      responses:
+        "201": { description: Created }
+  /bookings/{id}/media:
+    post:
+      summary: Create signed upload URL and media row
+      responses:
+        "201": { description: Created }
+  /bookings/{id}/media/{mediaId}/url:
+    get:
+      summary: Get signed read URL for booking media
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/payment:
+    post:
+      summary: Record booking payment (cash/upi/cashfree)
+      responses:
+        "201": { description: Created }
+  /bookings/{id}/payment/cashfree/order:
+    post:
+      summary: Create Cashfree order
+      responses:
+        "201": { description: Created }
+  /payments/cashfree/webhook:
+    post:
+      summary: Cashfree webhook endpoint
+      security: []
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/accept:
+    post:
+      summary: Helper accepts booking
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/decline:
+    post:
+      summary: Helper declines booking request
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/status:
+    post:
+      summary: Update booking status
+      responses:
+        "200": { description: Success }
+  /bookings/{id}/dispute:
+    post:
+      summary: Raise dispute for booking
+      responses:
+        "201": { description: Created }
+  /helper/me:
+    get:
+      summary: Current helper profile
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Update helper profile
+      responses:
+        "200": { description: Success }
+  /helper/bookings:
+    get:
+      summary: Helper bookings
+      responses:
+        "200": { description: Success }
+  /helper/location:
+    post:
+      summary: Helper location ping
+      responses:
+        "200": { description: Success }
+  /helper/earnings:
+    get:
+      summary: Helper earnings summary
+      responses:
+        "200": { description: Success }
+  /devices/register:
+    post:
+      summary: Register FCM device token
+      responses:
+        "201": { description: Created }
+  /admin/helpers/{id}/approve:
+    post:
+      summary: Approve helper KYC
+      responses:
+        "200": { description: Success }
+  /admin/helpers/{id}/reject:
+    post:
+      summary: Reject helper KYC
+      responses:
+        "200": { description: Success }
+  /admin/helpers/{id}/suspend:
+    post:
+      summary: Suspend helper
+      responses:
+        "200": { description: Success }
+  /admin/audit-logs:
+    get:
+      summary: Admin audit logs
+      responses:
+        "200": { description: Success }
+  /admin/disputes:
+    get:
+      summary: List disputes (admin)
+      responses:
+        "200": { description: Success }
+  /admin/disputes/{id}/resolve:
+    post:
+      summary: Resolve dispute (admin)
+      responses:
+        "200": { description: Success }
+  /admin/config/commission:
+    get:
+      summary: Get commission config
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Update commission config
+      responses:
+        "200": { description: Success }
+  /premium/subscribe:
+    post:
+      summary: Subscribe user to premium plan
+      responses:
+        "201": { description: Created }
+  /premium/me:
+    get:
+      summary: Get my active subscription
+      responses:
+        "200": { description: Success }
+  /corporate/accounts:
+    post:
+      summary: Create corporate account
+      responses:
+        "201": { description: Created }
+  /corporate/bookings:
+    get:
+      summary: List my corporate bookings
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Create corporate booking mapping
+      responses:
+        "201": { description: Created }
+  /ai/estimate:
+    post:
+      summary: AI issue estimation (stub)
+      responses:
+        "201": { description: Created }

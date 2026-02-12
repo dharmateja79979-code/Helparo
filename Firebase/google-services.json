@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "565411742459",
+    "project_id": "helparo-6042b",
+    "storage_bucket": "helparo-6042b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565411742459:android:2b28806d826518b8c4e65e",
+        "android_client_info": {
+          "package_name": "com.helparo.helparo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_vExQ6e2NZ3Bz6tfVMrp_Q87ahWCgpnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

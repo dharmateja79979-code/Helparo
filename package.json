@@ -1,0 +1,16 @@
+{
+  "name": "helparo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/api"
+  ],
+  "scripts": {
+    "api:dev": "npm --workspace apps/api run dev",
+    "api:build": "npm --workspace apps/api run build",
+    "api:test": "npm --workspace apps/api run test",
+    "release:env-audit": "powershell -ExecutionPolicy Bypass -File scripts/release/env_audit.ps1",
+    "release:api-smoke": "node scripts/release/api_smoke.mjs",
+    "release:gen-test-tokens": "node scripts/release/generate_app_test_tokens.mjs"
+  }
+}
