@@ -7,6 +7,7 @@ import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../booking/application/booking_controller.dart';
 import '../application/customer_controller.dart';
 
 class DisputeScreen extends ConsumerStatefulWidget {
@@ -49,6 +50,7 @@ class _DisputeScreenState extends ConsumerState<DisputeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bookings = ref.watch(myBookingsProvider);
     return Scaffold(
       appBar: AppBar(title: const Text("Raise Dispute")),
       body: ListView(
@@ -58,6 +60,37 @@ class _DisputeScreenState extends ConsumerState<DisputeScreen> {
             child: Text("Raise a dispute only for your own completed/paid jobs."),
           ),
           const SizedBox(height: AppSpacing.md),
+          bookings.when(
+            data: (rows) {
+              if (rows.isEmpty) return const SizedBox.shrink();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Pick from my bookings"),
+                  const SizedBox(height: AppSpacing.xs),
+                  DropdownButtonFormField<String>(
+                    initialValue: null,
+                    decoration: const InputDecoration(labelText: "Booking"),
+                    items: rows
+                        .map(
+                          (b) => DropdownMenuItem(
+                            value: b.id,
+                            child: Text("${b.id.substring(0, 8)} • ${b.status}"),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value == null) return;
+                      bookingIdController.text = value;
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                ],
+              );
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
           AppTextField(controller: bookingIdController, label: "Booking ID"),
           const SizedBox(height: AppSpacing.xs),
           AppTextField(controller: reasonController, label: "Dispute reason"),

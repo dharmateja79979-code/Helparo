@@ -37,10 +37,17 @@ $mobileRequired = @(
   "SUPABASE_ANON_KEY"
 )
 
+$adminRequired = @(
+  "VITE_API_BASE_URL",
+  "VITE_SUPABASE_URL",
+  "VITE_SUPABASE_ANON_KEY"
+)
+
 $apiOk = Test-EnvFile -Path "apps/api/.env" -RequiredKeys $apiRequired
 $mobileOk = Test-EnvFile -Path "apps/mobile/.env" -RequiredKeys $mobileRequired
+$adminOk = Test-EnvFile -Path "apps/admin/.env" -RequiredKeys $adminRequired
 
-if (!($apiOk -and $mobileOk)) {
+if (!($apiOk -and $mobileOk -and $adminOk)) {
   Write-Host "`nEnvironment audit failed."
   exit 1
 }

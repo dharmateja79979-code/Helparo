@@ -3,6 +3,7 @@
 ## Monorepo Structure
 - `apps/api`: Fastify + TypeScript API
 - `apps/mobile`: Flutter app (customer + helper)
+- `apps/admin`: React admin panel (Supabase login + admin role gate)
 - `supabase/migrations`: SQL schema + RLS
 - `supabase/seed`: seed scripts
 - `docs/openapi.yaml`: API docs
@@ -31,6 +32,14 @@
 1. Copy `apps/mobile/.env.example` to `apps/mobile/.env`.
 2. Fill Supabase, Firebase, API URL, Maps key.
 3. Keep `MAP_PROVIDER_PRIMARY=google` and fallback `osm`.
+
+### Admin
+1. Copy `apps/admin/.env.example` to `apps/admin/.env`.
+2. Fill:
+   - `VITE_API_BASE_URL`
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+3. Login requires a Supabase user with `users.role = 'admin'`.
 
 ## 2) Setup Supabase
 1. Run migration `supabase/migrations/0001_init.sql`.
@@ -67,6 +76,14 @@ flutter run \
 - Supabase: hosted project (DB/Auth/Storage/Realtime)
 - API: Railway (low-friction MVP deploy)
 - Mobile: Android first, then iOS
+- Admin panel: Vercel/Netlify/Cloudflare Pages (static hosting)
+
+## 5.1) Run Admin Locally
+```bash
+cd apps/admin
+npm install
+npm run dev
+```
 
 ## 6) Operational Notes
 - All sensitive actions write to `audit_logs`.
@@ -81,6 +98,13 @@ flutter run \
 - Commission config managed via:
   - `GET /admin/config/commission`
   - `POST /admin/config/commission`
+- Admin catalog/config CRUD:
+  - `GET|POST /admin/categories`
+  - `PATCH /admin/categories/:id`
+  - `GET|POST /admin/zones`
+  - `PATCH /admin/zones/:id`
+  - `GET|POST /admin/subscription-plans`
+  - `PATCH /admin/subscription-plans/:id`
 - Default commission seed is `15%`.
 - Cashfree:
   - Create order: `POST /bookings/:id/payment/cashfree/order`

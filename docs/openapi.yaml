@@ -245,6 +245,48 @@ paths:
       summary: Update commission config
       responses:
         "200": { description: Success }
+  /admin/categories:
+    get:
+      summary: List categories (admin)
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Create category (admin)
+      responses:
+        "201": { description: Created }
+  /admin/categories/{id}:
+    patch:
+      summary: Update category (admin)
+      responses:
+        "200": { description: Success }
+  /admin/zones:
+    get:
+      summary: List zones (admin)
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Create zone (admin)
+      responses:
+        "201": { description: Created }
+  /admin/zones/{id}:
+    patch:
+      summary: Update zone (admin)
+      responses:
+        "200": { description: Success }
+  /admin/subscription-plans:
+    get:
+      summary: List subscription plans (admin)
+      responses:
+        "200": { description: Success }
+    post:
+      summary: Create subscription plan (admin)
+      responses:
+        "201": { description: Created }
+  /admin/subscription-plans/{id}:
+    patch:
+      summary: Update subscription plan (admin)
+      responses:
+        "200": { description: Success }
   /premium/subscribe:
     post:
       summary: Subscribe user to premium plan

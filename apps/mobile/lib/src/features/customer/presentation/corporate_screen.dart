@@ -7,6 +7,7 @@ import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../booking/application/booking_controller.dart';
 import '../application/customer_controller.dart';
 
 class CorporateScreen extends ConsumerStatefulWidget {
@@ -53,6 +54,7 @@ class _CorporateScreenState extends ConsumerState<CorporateScreen> {
   @override
   Widget build(BuildContext context) {
     final repo = ref.read(customerRepositoryProvider);
+    final bookings = ref.watch(myBookingsProvider);
     return Scaffold(
       appBar: AppBar(title: const Text("Corporate")),
       body: ListView(
@@ -79,6 +81,37 @@ class _CorporateScreenState extends ConsumerState<CorporateScreen> {
           const SizedBox(height: AppSpacing.sm),
           AppTextField(controller: corporateIdController, label: "Corporate ID"),
           const SizedBox(height: AppSpacing.xs),
+          bookings.when(
+            data: (rows) {
+              if (rows.isEmpty) return const SizedBox.shrink();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Select booking"),
+                  const SizedBox(height: AppSpacing.xs),
+                  DropdownButtonFormField<String>(
+                    initialValue: null,
+                    decoration: const InputDecoration(labelText: "Booking"),
+                    items: rows
+                        .map(
+                          (b) => DropdownMenuItem(
+                            value: b.id,
+                            child: Text("${b.id.substring(0, 8)} • ${b.status}"),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (v) {
+                      if (v == null) return;
+                      bookingIdController.text = v;
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                ],
+              );
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
           AppTextField(controller: bookingIdController, label: "Booking ID"),
           const SizedBox(height: AppSpacing.xs),
           AppButton(

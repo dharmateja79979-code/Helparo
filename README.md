@@ -5,6 +5,7 @@ Helparo is a trust-first local helper marketplace (cleaning, plumbing, electrica
 ## Stack
 - Mobile: Flutter + Riverpod + go_router
 - API: Node.js + TypeScript + Fastify + Zod + Pino
+- Admin: React + Vite + Supabase Auth
 - Data/Auth/Storage/Realtime: Supabase (Postgres + Auth + Storage + Realtime)
 
 ## Decisions Implemented
